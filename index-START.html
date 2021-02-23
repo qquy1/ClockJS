@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS + CSS Clock</title>
+</head>
+<body>
+  <div id="container">
+    <p id="time"></p>
+  </div>
+
+    <div class="clock">
+      <div class="clock-face">
+        <div class="hand hour-hand"></div>
+        <div class="hand min-hand"></div>
+        <div class="hand second-hand"></div>
+      </div>
+    </div>
+
+
+  <style>
+    html {
+      background: #018DED url(https://unsplash.it/1500/1000?image=881&blur=5);
+      background-size: cover;
+      font-family: 'helvetica neue';
+      text-align: center;
+      font-size: 10px;
+    }
+
+    body {
+      margin: 0;
+      /*font-size: 2rem;*/
+
+      /*display: flex;
+      flex: 1;*/
+      min-height: 100vh;
+      align-items: center;
+    }
+
+    #container{
+      margin: 100px auto;
+      text-align: center;
+      padding: 6rem;
+    }
+    #time{
+      color:rgb(15, 12, 12);
+      font-size: 30px;
+      
+    }
+
+    .clock {
+      width: 30rem;
+      height: 30rem;
+      border: 20px solid white;
+      border-radius: 50%;
+      margin: 50px auto;              /*controls margin so it looks centered*/
+      position: relative;
+      padding: 2rem;
+      box-shadow:
+        0 0 0 4px rgba(0,0,0,0.1),
+        inset 0 0 0 3px #EFEFEF,
+        inset 0 0 10px black,
+        0 0 10px rgba(0,0,0,0.2);
+    }
+
+    .clock-face {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform: translateY(-3px); /* account for the height of the clock hands */
+    }
+
+    .hand {
+      position: absolute;
+      top: 50%;
+      transform-origin: 100%;         /*normally 50%*/
+      transform: rotate(90deg);
+      transition: 0.05s;
+      transition-timing-function: cubic-bezier(0.1, 2.7, 0.58, 1);
+    }
+    /*- clock hands are placed horizontally initially
+    so treat heigth and width with convention
+    
+    this means width setting controls length of needles
+    and height setting controls how wide the needles are*/
+    .min-hand{
+      width: 50%;
+      height: 6px;   
+      background: black;
+    }
+
+    .hour-hand{
+      width: 25%;
+      height: 6px;
+      background: black;
+      position: absolute;
+      top: 50%;
+      left: 25%; /*had to play with positions to get hour hand properly adjusted*/
+
+    }
+
+    .second-hand{
+      width: 50%;
+      height: 3px;
+      background:red;
+    }
+
+  </style>
+
+  <script>
+    const secondHand = document.querySelector('.second-hand');
+    const minuteHand = document.querySelector('.min-hand');
+    const hourHand = document.querySelector('.hour-hand');
+    
+    
+    function setDate(){
+      const now = new Date();
+
+      const second = now.getSeconds();
+      const minute = now.getMinutes();
+      const hour = now.getHours();
+      // 60 second ticks -> 1 minute tick = 6deg gain => each second tick = 0.1deg gain for minute hand
+
+      // 60 minutes tick -> 1 hr tick = 30deg gain => each minute tick = 0.5 deg gain for hour hand
+      const secondsDegree = (second/60) * 360 + 90;
+      const minutesDegree = (minute/60) * 360 + second*0.1 + 90;
+      const hoursDegree = (hour/12) * 360 + minute*0.5 + 90 ;
+
+      secondHand.style.transform = `rotate(${secondsDegree}deg)`;
+      minuteHand.style.transform = `rotate(${minutesDegree}deg)`;
+      hourHand.style.transform = `rotate(${hoursDegree}deg)`;
+      
+      console.log(hour);
+
+      // update the current time
+      document.getElementById('time').innerHTML = now;
+      
+    }
+    
+    setInterval(setDate, 1000);    // update page every second 
+  </script>
+</body>
+</html>
